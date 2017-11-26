@@ -3,7 +3,7 @@ from time import sleep
 import sys
 
 from ifttt import trigger
-from event_cfg_empty import events
+from event_cfg import events
 from secret import debug
 
 def run_loop(sleep_time):
