@@ -1,0 +1,7 @@
+# per-instance
+event_cfg.py
+secret.py
+
+# random crap
+.idea*
+__pycache__*
