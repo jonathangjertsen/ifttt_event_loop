@@ -3,7 +3,7 @@ from time import sleep
 import sys
 
 from ifttt import trigger
-from event_cfg import events
+from event_cfg_empty import events
 from secret import debug
 
 def run_loop(sleep_time):
@@ -25,7 +25,7 @@ def run_loop(sleep_time):
             # Check periodic triggers
             if "periodic" in conditions:
                 counters[event] += sleep_time
-                if counters[event][event] >= conditions["period"]:
+                if counters[event] >= conditions["periodic"]:
                     counters[event] = 0
                     do_check = True
 

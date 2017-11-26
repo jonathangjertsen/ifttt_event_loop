@@ -1,14 +1,13 @@
-"""
-from triggers.<your file> import *
+from triggers.example import *
 
 events = {
-    <IFTTT event name>: {
-        "func": <trigger function>,
-        "args": <dict with arguments to trigger function>,
+    "test": {
+        "func": trigger_example,
+        "args": {
+            "do_it": True
+        },
         "conditions": {
-            "time of day": <time of day in %H:%M format>, # OPTIONAL
-            "period": <period in second>, # OPTIONAL
+            "periodic": 10
         },
     },
 }
-"""
