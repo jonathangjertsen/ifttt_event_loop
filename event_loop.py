@@ -69,4 +69,10 @@ def run_loop(sleep_time):
                         print("IFTT response: {response}".format(response=response.text))
 
 if __name__ == "__main__":
-    run_loop(max(10, int(sys.argv[1])))
+    if len(sys.argv) >= 2 and sys.argv[1].isdigit():
+        sleep_time = int(sys.argv[1])
+    else:
+        print("No valid sleep time set, will default to 10 seconds")
+        sleep_time = 10
+
+    run_loop(sleep_time)
