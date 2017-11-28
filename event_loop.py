@@ -60,10 +60,10 @@ def run_loop(sleep_time):
             if do_check:
                 func = events[event]["func"]
                 args = events[event]["args"]
-                do_trigger, data = func(**args)
+                data = func(**args)
                 if debug:
                     print("Event data: ", data)
-                if do_trigger:
+                if data is not None:
                     response = trigger(event, *data)
                     if debug:
                         print("IFTT response: {response}".format(response=response.text))

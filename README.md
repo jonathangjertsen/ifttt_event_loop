@@ -13,7 +13,7 @@ TODO: make a package, if anyone cares
 
 * Copy contents of `secret_empty.py` to `secrets.py` and add the IFTTT maker webhook key
 * Make a Python file in the `triggers/` folder
-* Define a function there where the first return value is whether to trigger a webhook, and the second return value is a tuple with up to three values to include in the webhook
+* Define a function there where the return value is either a tuple with up to three values to include in the webhook, or `None` if no webhook should be sent (see the example)
 * Copy contents of `event_cfg_empty.py` to `event_cfg.py` and adjust it to work with the function defined in the `triggers/` folder
 
 ## Usage
