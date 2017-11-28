@@ -6,6 +6,7 @@ Monitor stuff and send IFTTT maker webhooks when something interesting happens
 
 * Python 3
 * requests
+* croniter
 
 ## Installation
 

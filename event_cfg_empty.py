@@ -7,7 +7,14 @@ events = {
             "do_it": True
         },
         "conditions": {
-            "periodic": 10
+            # Do it every 10 seconds
+            "periodic": 10,
+
+            # Do it at 17:12 every day
+            "time of day": "17:12",
+
+            # Do it every minute but it's like cron
+            "cron": "*/1 * * * *"
         },
     },
 }

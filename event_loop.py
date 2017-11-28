@@ -2,6 +2,8 @@ from datetime import datetime
 from time import sleep
 import sys
 
+from croniter import croniter
+
 from ifttt import trigger
 from event_cfg import events
 from secret import debug
@@ -19,8 +21,24 @@ def run_loop(sleep_time):
     def default_timeofdays():
         return { event: False for event in events if "time of day" in events[event]["conditions"] }
 
+    def default_crons():
+        base_time = datetime.now()
+        crons = {}
+        for event in events:
+            if "cron" in events[event]["conditions"]:
+                cron_string = events[event]["conditions"]["cron"]
+                if croniter.is_valid(cron_string):
+                    crons[event] = croniter(cron_string, base_time)
+                    # Advance the iterator once so the first call to
+                    # get_current() doesn't return the current time
+                    crons[event].get_next()
+                else:
+                    raise ValueError("Invalid cron string specified for event {event}".format(event=event))
+        return crons
+
     counters = default_counters()
     timeofdays = default_timeofdays()
+    crons = default_crons()
 
     datetime_after_sleep = datetime.now()
     while True:
@@ -52,9 +70,15 @@ def run_loop(sleep_time):
             if "time of day" in conditions:
                 if not timeofdays[event]:
                     trigger_time = datetime.strptime(conditions["time of day"], "%H:%M").time()
-                    if trigger_time >= datetime.now().time():
+                    if trigger_time >= datetime_after_sleep.time():
                         do_check = True
                         timeofdays[event] = True
+
+            # Check cron-like triggers
+            if "cron" in conditions:
+                if crons[event].get_current(datetime) <= datetime_after_sleep:
+                    do_check = True
+                    crons[event].get_next(datetime)
 
             # Run triggered events
             if do_check:
@@ -72,7 +96,7 @@ if __name__ == "__main__":
     if len(sys.argv) >= 2 and sys.argv[1].isdigit():
         sleep_time = int(sys.argv[1])
     else:
-        print("No valid sleep time set, will default to 10 seconds")
-        sleep_time = 10
+        print("No valid sleep time set, will default to 5 seconds")
+        sleep_time = 5
 
     run_loop(sleep_time)
