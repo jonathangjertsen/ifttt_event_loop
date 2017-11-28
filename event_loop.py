@@ -7,17 +7,36 @@ from event_cfg import events
 from secret import debug
 
 def run_loop(sleep_time):
-    counters = {}
-    timeofdays = {}
-    for event in events:
-        conditions = events[event]["conditions"]
-        if "periodic" in conditions:
-            counters[event] = 0
-        if "time of day" in conditions:
-            timeofdays[event] = False
+    """
+    Check triggers, act on triggers
 
+    :param sleep_time: Time to sleep between each iteration
+    :return:
+    """
+    def default_counters():
+        return { event: 0 for event in events if "periodic" in events[event]["conditions"] }
+
+    def default_timeofdays():
+        return { event: False for event in events if "time of day" in events[event]["conditions"] }
+
+    counters = default_counters()
+    timeofdays = default_timeofdays()
+
+    datetime_after_sleep = datetime.now()
     while True:
-        sleep(sleep_time)
+        # In case we did something time consuming, remove the time it took from the sleep time
+        true_sleep_time = sleep_time - (datetime.now() - datetime_after_sleep).seconds
+
+        # Goodnight
+        sleep(max(true_sleep_time, 0))
+        datetime_after_prev_sleep = datetime_after_sleep
+        datetime_after_sleep = datetime.now()
+
+        # Reset time-of-day flags
+        if datetime_after_sleep.date() != datetime_after_prev_sleep.date():
+            timeofdays = default_timeofdays()
+
+        # Check all the triggers
         for event in events:
             do_check = False
             conditions = events[event]["conditions"]
